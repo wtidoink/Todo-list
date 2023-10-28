@@ -35,7 +35,6 @@ public class TaskCRUD {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            // Handle the exception as needed
         }
         return tasks;
     }
@@ -49,20 +48,19 @@ public class TaskCRUD {
             st.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-            // Handle the exception as needed
         }
     }
 
-    public void deleteTask(int taskId) {
+    public boolean deleteTask(Task task) {
         String deleteQuery = "DELETE FROM tasks WHERE task_id = ?";
         try (PreparedStatement st = conn.prepareStatement(deleteQuery)) {
-            st.setInt(1, taskId);
+            st.setInt(1, task.getTaskId());
             st.executeUpdate();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
-            // Handle the exception as needed
+            return false;
         }
     }
-    // Other methods as needed.
 }
 

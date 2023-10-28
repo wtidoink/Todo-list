@@ -6,11 +6,19 @@ import java.util.List;
 class TodoApp{
     private TaskCRUD taskCrud;
      private JFrame frame;
-     private JButton addtask;
+     private JButton addtask,deleteButton;
      private JPanel mypan;
      private JList<Task> myl;
      private DefaultListModel<Task> mytl;
      private JScrollPane myscroll;
+     private void deleteSelectedTask() {
+      int selectedIndex = myl.getSelectedIndex();
+      if (selectedIndex != -1) {
+        Task selecttask=myl.getSelectedValue();
+        if(taskCrud.deleteTask(selecttask))
+          mytl.remove(selectedIndex);
+      }
+  }
 
 
    TodoApp(TaskCRUD taskCrud){
@@ -20,21 +28,22 @@ class TodoApp{
        frame= new JFrame("Todo-list");
        mypan= new JPanel(new FlowLayout(FlowLayout.CENTER));
        addtask=new JButton("add");
+      deleteButton = new JButton("Delete");
 
 
        mytl= new DefaultListModel<>();
+       //Adds element to jlist
        List<Task> tasks= taskCrud.getAllTasks();
         for (Task task : tasks) {
             mytl.addElement(task);
         }
-//System.out.println(tasks);
 
        myl=new JList<>(mytl);
        myscroll=new JScrollPane(myl);
        myscroll.setPreferredSize(new Dimension(400,380));
       
-
-       addtask.setBounds(400,400,80,50);
+      deleteButton.setBounds(250,400,80,50);
+       addtask.setBounds(150,400,80,50);
        addtask.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -47,8 +56,20 @@ class TodoApp{
             }
         }
     });
+
+
+     deleteButton.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            deleteSelectedTask();
+        }
+    });
+
+  
+
        mypan.add(myscroll);
        frame.add(addtask);
+       frame.add(deleteButton);
        frame.add(mypan);
        frame.setSize(500, 500);
        //frame.setLayout(null);
