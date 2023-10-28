@@ -1,39 +1,52 @@
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
-
 import java.awt.*;
 import java.awt.event.*;
+import java.util.List;
 
 class TodoApp{
+    private TaskCRUD taskCrud;
      private JFrame frame;
      private JButton addtask;
      private JPanel mypan;
-     private JList<Taskitem> myl;
+     private JList<Task> myl;
+     private DefaultListModel<Task> mytl;
      private JScrollPane myscroll;
 
-   TodoApp(){
 
-        
+   TodoApp(TaskCRUD taskCrud){
+
+        this.taskCrud=taskCrud;
 
        frame= new JFrame("Todo-list");
        mypan= new JPanel(new FlowLayout(FlowLayout.CENTER));
        addtask=new JButton("add");
-       String[] myt={
-        "Cook food","Complete Java Project","Read a book","Solve Code force Problems","Do exercise"};
-       /* DefaultListModel<String> taskListModel = new DefaultListModel<>();*/
-       myl=new JList<Taskitem>();
-        for(String task :myt)
-                myl.addElement(new Taskitem(task,false));
-       
-       myl.setCellRenderer(new TaskCellRenderer());
+
+
+       mytl= new DefaultListModel<>();
+       List<Task> tasks= taskCrud.getAllTasks();
+        for (Task task : tasks) {
+            mytl.addElement(task);
+        }
+//System.out.println(tasks);
+
+       myl=new JList<>(mytl);
        myscroll=new JScrollPane(myl);
        myscroll.setPreferredSize(new Dimension(400,380));
       
 
        addtask.setBounds(400,400,80,50);
+       addtask.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            // This code will run when the "Add Task" button is clicked
+            String taskDescription = JOptionPane.showInputDialog(frame, "Enter Task Description");
+            if (taskDescription != null && !taskDescription.isEmpty()) {
+                Task newTask = new Task(1,taskDescription, false);
+                taskCrud.addTask(newTask);
+                mytl.addElement(newTask); // Add the task to the GUI list
+            }
+        }
+    });
        mypan.add(myscroll);
        frame.add(addtask);
        frame.add(mypan);
@@ -43,24 +56,10 @@ class TodoApp{
        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-       private class TaskCellRenderer extends JLabel implements ListCellRenderer<String> {
-        private Border padding = new CompoundBorder(new EmptyBorder(5, 5, 5, 5), new LineBorder(Color.BLACK));
-
-        public TaskCellRenderer() {
-            setOpaque(true);
-        }
-
-        @Override
-        public Component getListCellRendererComponent(JList<? extends String> list, String value, int index, boolean isSelected, boolean cellHasFocus) {
-            setText(value);
-            setBackground(isSelected ? Color.LIGHT_GRAY : Color.WHITE);
-            setBorder(padding);
-            return this;
-        }
-    }
 
     public static void main(String[] args) {
-          new TodoApp();
+      TaskCRUD taskCrud=new TaskCRUD(DBConn.connect());
+      new TodoApp(taskCrud);
         
     }
 
