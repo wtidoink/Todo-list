@@ -1,14 +1,13 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 
-class TodoApp {
+class GoalTracker {
     private TaskCRUD taskCrud;
     private HabitCRUD habitCrud;
     private JFrame frame;
@@ -22,7 +21,7 @@ class TodoApp {
 
 
 
-    TodoApp(TaskCRUD taskCrud, HabitCRUD habitCrud) {
+    GoalTracker(TaskCRUD taskCrud, HabitCRUD habitCrud) {
         this.taskCrud = taskCrud;
         this.habitCrud = habitCrud;
 
@@ -63,15 +62,12 @@ taskTable.addMouseListener(new MouseAdapter() {
     @Override
     public void mouseClicked(MouseEvent e) {
         int column = taskTable.columnAtPoint(e.getPoint());
-        if (column == 1) { // Assuming "Completed" column is the second column (index 1)
+        if (column == 1) { 
             int row = taskTable.rowAtPoint(e.getPoint());
             boolean completed = (Boolean) taskTable.getValueAt(row, 1);
-
-            // Toggle the completion status
             taskTable.setValueAt(!completed, row, 1);
-
             // Update the change in the database by task description
-            String taskDescription = (String) taskTable.getValueAt(row, 0); // Assuming task description is in the third column (index 2)
+            String taskDescription = (String) taskTable.getValueAt(row, 0);
             taskCrud.updateTaskCompletionStatus(taskDescription, !completed);
         }
     }
@@ -86,8 +82,6 @@ habitTableModel.addColumn("Progress");
 
 // Create a JTable with the DefaultTableModel
 habitTable = new JTable(habitTableModel);
-
-// Create a custom cell renderer for the "Progress" column
 habitTable.getColumnModel().getColumn(1).setCellRenderer(new ProgressCellRenderer());
 
 
@@ -119,19 +113,10 @@ habitTable.getColumnModel().getColumn(1).setCellRenderer(new ProgressCellRendere
             public void actionPerformed(ActionEvent e) {
                 String habitDescription = JOptionPane.showInputDialog(frame, "Enter Habit Description");
                 if (habitDescription != null && !habitDescription.isEmpty()) {
-                   
-                    // Prompt the user for hasReminder
                     int option = JOptionPane.showConfirmDialog(frame, "Does it have a reminder?", "Reminder", JOptionPane.YES_NO_OPTION);
                     boolean hasReminder = (option == JOptionPane.YES_OPTION);
-        
-                    // Create a new Habit object
                     Habit newHabit = new Habit(0, habitDescription, hasReminder, new HashMap<>());
-        
-                    // Add the new habit to the database
                     habitCrud.addHabit(newHabit);
-        
-                    // Add the new habit to the GUI list
-                    //habitListModel.addElement(newHabit);
                     habitTableModel.addRow(new Object[]{newHabit.getDescription(), false});
                 }
             }
@@ -229,6 +214,6 @@ habitTable.getColumnModel().getColumn(1).setCellRenderer(new ProgressCellRendere
     public static void main(String[] args) {
         TaskCRUD taskCrud = new TaskCRUD(DBConn.connect());
         HabitCRUD habitCrud = new HabitCRUD(DBConn.connect());
-        new TodoApp(taskCrud, habitCrud);
+        new GoalTracker(taskCrud, habitCrud);
     }
 }
