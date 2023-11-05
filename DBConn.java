@@ -8,7 +8,6 @@ public class DBConn {
     private static final String DB_PASSWORD = "2323";
 
     public static Connection connect() {
-        //Class.forName(Class_Name);
         Connection connection = null;
         try {
              //Register the oracle driver

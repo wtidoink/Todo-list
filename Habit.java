@@ -1,26 +1,21 @@
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Map;
 
 public class Habit {
-    private int habitId;
     private String description;
     private boolean hasReminder;
+    private LocalTime reminderTime;
     private Map<LocalDate, Boolean> dailyProgress;
 
-    public Habit(int habitId, String description, boolean hasReminder, Map<LocalDate, Boolean> dailyProgress) {
-        this.habitId = habitId;
+    public Habit(String description, boolean hasReminder,LocalTime reminderTime, Map<LocalDate, Boolean> dailyProgress) {
         this.description = description;
         this.hasReminder = hasReminder;
+        this.reminderTime = reminderTime;
         this.dailyProgress = dailyProgress;
     }
 
-    public int getHabitId() {
-        return habitId;
-    }
 
-    public void setHabitId(int habitId) {
-        this.habitId = habitId;
-    }
 
     public String getDescription() {
         return description;
@@ -45,13 +40,19 @@ public class Habit {
     public void setDailyProgress(Map<LocalDate, Boolean> dailyProgress) {
         this.dailyProgress = dailyProgress;
     }
+ public LocalTime getReminderTime() {
+        return reminderTime;
+    }
 
-    @Override
-    public String toString() {
-        return "Habit{" +
-                "habitId=" + habitId +
-                ", description='" + description + '\'' +
-                ", hasReminder=" + hasReminder +
-                '}';
+    public void setReminderTime(LocalTime reminderTime) {
+        this.reminderTime = reminderTime;
+    }
+
+    public boolean isReminderTime() {
+        if (hasReminder) {
+            LocalTime now = LocalTime.now();
+            return now.isAfter(reminderTime);
+        }
+        return false;
     }
 }
