@@ -38,29 +38,30 @@ public class TaskCRUD {
         }
         return tasks;
     }
-
-    public void updateTask(Task task) {
-        String updateQuery = "UPDATE tasks SET task_description = ?, is_completed = ? WHERE task_id = ?";
+    public void updateTaskCompletionStatus(String descrpiton, boolean completed) {
+        String updateQuery = "UPDATE tasks SET is_completed = ? WHERE task_description = ?";
         try (PreparedStatement st = conn.prepareStatement(updateQuery)) {
-            st.setString(1, task.getDescription());
-            st.setBoolean(2, task.isCompleted());
-            st.setInt(3, task.getTaskId());
+            st.setBoolean(1, completed);
+            st.setString(2, descrpiton);
             st.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+    
 
-    public boolean deleteTask(Task task) {
-        String deleteQuery = "DELETE FROM tasks WHERE task_id = ?";
+  
+    public boolean deleteTaskByDescription(String description) {
+        String deleteQuery = "DELETE FROM tasks WHERE task_description = ?";
         try (PreparedStatement st = conn.prepareStatement(deleteQuery)) {
-            st.setInt(1, task.getTaskId());
-            st.executeUpdate();
-            return true;
+            st.setString(1, description);
+            int rowsAffected = st.executeUpdate();
+            return rowsAffected > 0;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
     }
+    
 }
 

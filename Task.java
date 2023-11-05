@@ -11,6 +11,10 @@ public class Task {
         return taskId;
     }
 
+    public boolean getCheck(){
+        return ischeck;
+    }
+
     public String getDescription() {
         return tasktext;
     }

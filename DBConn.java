@@ -6,10 +6,8 @@ public class DBConn {
     private static final String DB_URL = "jdbc:oracle:thin:@localhost:1521/XE";
     private static final String DB_USER = "system";
     private static final String DB_PASSWORD = "2323";
-    //private static final String Class_Name="oracle.jdbc.driver.OracleDriver";
 
     public static Connection connect() {
-        //Class.forName(Class_Name);
         Connection connection = null;
         try {
              //Register the oracle driver
