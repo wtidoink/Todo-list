@@ -144,12 +144,11 @@ habitTable.addMouseListener(new MouseAdapter() {
                     }
                 }
             }
-        
+          
             Habit newHabit = new Habit(habitDescription, hasReminder, reminderTime,new HashMap<>());
-
             habitCrud.addHabit(newHabit);
             habitCrud.createRowsForHabitDescriptions();
-            habitTableModel.addRow(new Object[]{newHabit.getDescription(), false});
+            habitTableModel.addRow(new Object[]{newHabit.getDescription(),habitCrud.getCompletionPercentageForHabit(newHabit.getDescription()), false});
         }
     }
 });
@@ -268,7 +267,7 @@ habitTable.addMouseListener(new MouseAdapter() {
         HabitCRUD habitCrud = new HabitCRUD(DBConn.connect());
         habitCrud.createRowsForHabitDescriptions();
         GoalTracker goaltracker=new GoalTracker(taskCrud, habitCrud);
-        Timer reminderTimer = new Timer(600000, new ActionListener() {
+        Timer reminderTimer = new Timer(6, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 goaltracker.checkReminders();

@@ -117,13 +117,13 @@ public boolean updateHabitProgress(String description, LocalDate progressDate, b
 
 
 public boolean deleteHabit(String description) {
-    String deleteQuery = "DELETE FROM habits WHERE description = ?";
+    String deleteQuery = "DELETE FROM habit_progress WHERE habit_description =? ";
     
     try (PreparedStatement st = conn.prepareStatement(deleteQuery)) {
         st.setString(1, description);
         int rowsDeleted = st.executeUpdate();
         if (rowsDeleted > 0) {
-            String deleteProgressQuery = "DELETE FROM habit_progress WHERE habit_description =? ";
+            String deleteProgressQuery = "DELETE FROM habits WHERE description = ?";
             try (PreparedStatement stProgress = conn.prepareStatement(deleteProgressQuery)) {
                 stProgress.setString(1, description);
                 stProgress.executeUpdate();
@@ -214,7 +214,7 @@ public double getCompletionPercentageForHabit(String habitDescription) {
         e.printStackTrace();
     }
 
-    return 0.0; // Default completion percentage.
+    return 0.0;
 }
 
 public int getTotalEntriesForHabit(String habitDescription) {
@@ -231,7 +231,7 @@ public int getTotalEntriesForHabit(String habitDescription) {
         e.printStackTrace();
     }
 
-    return 0; // Default total entries.
+    return 0;
 }
 
 
